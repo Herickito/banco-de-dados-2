@@ -1,2 +1,6 @@
-# banco-de-dados-2
-Matéria de banco de dados
+# aulaBD
+BANCO DE DADOS
+## Códigos do GITHUB
+-git add .
+-git commit -m "txt"
+-git push origin main
