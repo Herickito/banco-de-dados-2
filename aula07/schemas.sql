@@ -1,5 +1,5 @@
 -- Ativa foreign keys no inicio do script
-PRAGMA foreign_keys = NO;
+PRAGMA foreign_keys = ON;
 
 -- Tabela usuario
 CREATE TABLE usuario(
