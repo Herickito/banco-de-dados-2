@@ -124,3 +124,23 @@ WHERE
             VendasTotais
 
     );
+
+
+SELECT
+    produto_id,
+    ROUND(valor_total :: numeric,2) AS produto_total,
+    ROUND(quantidade_total:: numeric,2) AS quantidade_total,
+    ROUND((valor_total / NULLIF(quantidade_total,0)):: numeric,2) AS valor_medio_por_produtos
+FROM
+    (
+        SELECT
+            produto_id,
+            SUM(quantidade * valor_unitario) AS valor_total,
+            SUM(quantidade) AS quantidade_total
+        FROM
+            vendas_itens2
+        GROUP BY
+            produto_id
+    ) AS resumo_produtos
+ORDER BY
+    produto_id;
