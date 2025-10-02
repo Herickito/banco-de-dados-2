@@ -1,0 +1,126 @@
+SELECT * FROM vendas_itens2;
+
+SELECT 
+    venda_id,
+    ROUND(SUM(quantidade * valor_unitario):: numeric, 2) as total_vendas,
+    data_venda
+FROM
+    vendas_itens2
+GROUP BY
+    venda_id, data_venda
+ORDER BY
+    venda_id;
+
+
+SELECT 
+    ROUND(AVG(total_vendas)::numeric,3) AS media_total_vendas
+FROM(
+    SELECT 
+    venda_id,
+    ROUND(SUM(quantidade * valor_unitario):: numeric, 2) as total_vendas
+FROM
+    vendas_itens2
+GROUP BY
+    venda_id
+) AS vendas_totais;
+
+-- VENDA COM VALOR MINIMO E VENDA COM VALOR MAXIMO
+
+SELECT 
+    ROUND(MAX(total_vendas)::numeric,3) AS MAIOR_VENDA,
+    ROUND(MIN(total_vendas)::numeric,3) AS MENOR_VENDA,
+    ROUND(AVG(total_vendas)::numeric,3) AS media_total_vendas
+    -- min(total_vendas),
+    -- max(total_vendas)
+FROM(
+    SELECT 
+    venda_id,
+    ROUND(SUM(quantidade * valor_unitario):: numeric, 2) as total_vendas
+FROM
+    vendas_itens2
+GROUP BY
+    venda_id
+) AS vendas_totais;
+
+
+
+
+--VENDA COM VALOR MÍNIMO
+SELECT 
+    venda_id,
+    total_vendas
+FROM(
+     SELECT 
+    venda_id,
+    ROUND(SUM(quantidade * valor_unitario):: numeric, 2) as total_vendas
+FROM
+    vendas_itens2
+GROUP BY
+    venda_id
+) AS vendas_totais
+WHERE 
+    total_vendas = (
+        SELECT
+            MIN(total_vendas)
+        FROM
+            (
+                SELECT venda_id,
+                    SUM(quantidade * valor_unitario) as total_vendas
+                FROM
+                    vendas_itens2
+                GROUP BY
+                    venda_id
+            )as menor_venda 
+    );
+
+
+--CTE - COMPRA MÍNIMA
+
+WITH VendasTotais AS (
+    --Calcular o total de cada venda
+    SELECT
+        venda_id,
+        SUM(quantidade * valor_unitario) as total_vendas
+    FROM
+        vendas_itens2
+    GROUP BY 
+        venda_id
+)
+SELECT
+    venda_id,
+    total_vendas
+FROM
+    VendasTotais
+WHERE
+    total_vendas = (
+        SELECT 
+            MIN(total_vendas)
+        FROM
+            VendasTotais
+
+    );
+
+--MAXIMO 
+WITH VendasTotais AS (
+    --Calcular o total de cada venda
+    SELECT
+        venda_id,
+        SUM(quantidade * valor_unitario) as total_vendas
+    FROM
+        vendas_itens2
+    GROUP BY 
+        venda_id
+)
+SELECT
+    venda_id,
+    total_vendas
+FROM
+    VendasTotais
+WHERE
+    total_vendas = (
+        SELECT 
+            MAX(total_vendas)
+        FROM
+            VendasTotais
+
+    );
